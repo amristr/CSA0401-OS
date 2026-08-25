@@ -1,0 +1,111 @@
+PROGRAM:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Block
+{
+    char data[256];
+    struct Block *next;
+};
+
+int main()
+{
+    struct Block *firstBlock = NULL;
+    struct Block *lastBlock = NULL;
+    struct Block *newBlock;
+    struct Block *current;
+
+    int blockCount = 0;
+    int blockNumber;
+    char data[256];
+
+    printf("Enter blocks (Enter '0' as block number to exit):\n");
+
+    while (1)
+    {
+        printf("Block Number: ");
+        scanf("%d", &blockNumber);
+
+        if (blockNumber == 0)
+            break;
+
+        printf("Block Data: ");
+        scanf(" %[^\n]", data);
+
+        newBlock = (struct Block *)malloc(sizeof(struct Block));
+
+        if (newBlock == NULL)
+        {
+            printf("Memory allocation failed.\n");
+            return 1;
+        }
+
+        strcpy(newBlock->data, data);
+        newBlock->next = NULL;
+
+        if (firstBlock == NULL)
+        {
+            firstBlock = newBlock;
+            lastBlock = newBlock;
+        }
+        else
+        {
+            lastBlock->next = newBlock;
+            lastBlock = newBlock;
+        }
+
+        blockCount++;
+    }
+
+    printf("\nEnter block number to access: ");
+    scanf("%d", &blockNumber);
+
+    if (blockNumber < 1 || blockNumber > blockCount)
+    {
+        printf("Block not found.\n");
+    }
+    else
+    {
+        current = firstBlock;
+
+        for (int i = 1; i < blockNumber; i++)
+        {
+            current = current->next;
+        }
+
+        printf("Block Number: %d\n", blockNumber);
+        printf("Block Data: %s\n", current->data);
+    }
+
+    current = firstBlock;
+
+    while (current != NULL)
+    {
+        struct Block *temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Enter blocks (Enter '0' as block number to exit):
+Block Number: 1
+Block Data: Apple
+Block Number: 2
+Block Data: Banana
+Block Number: 3
+Block Data: Orange
+Block Number: 4
+Block Data: Mango
+Block Number: 0
+
+Enter block number to access: 3
+
+Block Number: 3
+Block Data: Orange
