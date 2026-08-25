@@ -1,0 +1,99 @@
+PROGRAM:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Block
+{
+    int blockNumber;
+    char data[256];
+};
+
+int main()
+{
+    FILE *file;
+    struct Block block;
+    int indexBlock[100] = {0};
+    int blockNumber;
+
+    file = fopen("indexed_file.txt", "w");
+
+    if (file == NULL)
+    {
+        printf("Error opening the file.\n");
+        return 1;
+    }
+
+    printf("Enter blocks (Enter '0' as block number to exit):\n");
+
+    while (1)
+    {
+        printf("Block Number: ");
+        scanf("%d", &block.blockNumber);
+
+        if (block.blockNumber == 0)
+            break;
+
+        printf("Block Data: ");
+        scanf(" %[^\n]", block.data);
+
+        indexBlock[block.blockNumber] = block.blockNumber;
+
+        fprintf(file, "%d %s\n",
+                block.blockNumber, block.data);
+    }
+
+    fclose(file);
+
+    file = fopen("indexed_file.txt", "r");
+
+    if (file == NULL)
+    {
+        printf("Error opening the file.\n");
+        return 1;
+    }
+
+    printf("\nEnter block number to access: ");
+    scanf("%d", &blockNumber);
+
+    if (indexBlock[blockNumber] == 0)
+    {
+        printf("Block not found.\n");
+    }
+    else
+    {
+        while (fscanf(file, "%d %[^\n]",
+                      &block.blockNumber, block.data) == 2)
+        {
+            if (block.blockNumber == blockNumber)
+            {
+                printf("Block Number: %d\n", block.blockNumber);
+                printf("Block Data: %s\n", block.data);
+                break;
+            }
+        }
+    }
+
+    fclose(file);
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Enter blocks (Enter '0' as block number to exit):
+Block Number: 1
+Block Data: Apple
+Block Number: 2
+Block Data: Banana
+Block Number: 3
+Block Data: Orange
+Block Number: 4
+Block Data: Mango
+Block Number: 0
+
+Enter block number to access: 3
+
+Block Number: 3
+Block Data: Orange
