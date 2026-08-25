@@ -1,0 +1,92 @@
+PROGRAM:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int n, head, seek_time = 0;
+
+    printf("Enter the number of disk requests: ");
+    scanf("%d", &n);
+
+    int request_queue[n];
+
+    printf("Enter the disk request queue:\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        scanf("%d", &request_queue[i]);
+    }
+
+    printf("Enter the initial position of the disk head: ");
+    scanf("%d", &head);
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (request_queue[i] > request_queue[j])
+            {
+                int temp = request_queue[i];
+                request_queue[i] = request_queue[j];
+                request_queue[j] = temp;
+            }
+        }
+    }
+
+    printf("\nSCAN (Elevator) Disk Scheduling:\n");
+
+    int start = 0;
+    int end = n - 1;
+    int current = head;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (request_queue[i] >= head)
+        {
+            seek_time += abs(request_queue[i] - current);
+            current = request_queue[i];
+
+            printf("Servicing request: %d\n", current);
+        }
+    }
+
+    for (int i = start; i < n; i++)
+    {
+        if (request_queue[i] < head)
+        {
+            seek_time += abs(request_queue[i] - current);
+            current = request_queue[i];
+
+            printf("Servicing request: %d\n", current);
+        }
+    }
+
+    printf("\nTotal Seek Time: %d\n", seek_time);
+    printf("Average Seek Time: %.2f\n",
+           (float)seek_time / n);
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Enter the number of disk requests: 8
+Enter the disk request queue:
+98 183 37 122 14 124 65 67
+Enter the initial position of the disk head: 53
+
+SCAN (Elevator) Disk Scheduling:
+Servicing request: 65
+Servicing request: 67
+Servicing request: 98
+Servicing request: 122
+Servicing request: 124
+Servicing request: 183
+Servicing request: 37
+Servicing request: 14
+
+Total Seek Time: 331
+Average Seek Time: 41.38
