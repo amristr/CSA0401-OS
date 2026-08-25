@@ -1,0 +1,92 @@
+PROGRAM:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Record
+{
+    int recordNumber;
+    char data[256];
+};
+
+int main()
+{
+    FILE *file;
+    struct Record record;
+    int recordNumber;
+
+    file = fopen("sequential_file.txt", "w");
+
+    if (file == NULL)
+    {
+        printf("Error opening the file.\n");
+        return 1;
+    }
+
+    printf("Enter records (Enter '0' as record number to exit):\n");
+
+    while (1)
+    {
+        printf("Record Number: ");
+        scanf("%d", &record.recordNumber);
+
+        if (record.recordNumber == 0)
+            break;
+
+        printf("Record Data: ");
+        scanf(" %[^\n]", record.data);
+
+        fprintf(file, "%d %s\n",
+                record.recordNumber, record.data);
+    }
+
+    fclose(file);
+
+    file = fopen("sequential_file.txt", "r");
+
+    if (file == NULL)
+    {
+        printf("Error opening the file.\n");
+        return 1;
+    }
+
+    printf("\nEnter record number to access: ");
+    scanf("%d", &recordNumber);
+
+    printf("\nRecords read sequentially:\n");
+
+    while (fscanf(file, "%d %[^\n]",
+                  &record.recordNumber, record.data) == 2)
+    {
+        printf("Record %d: %s\n",
+               record.recordNumber, record.data);
+
+        if (record.recordNumber == recordNumber)
+            break;
+    }
+
+    fclose(file);
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Enter records (Enter '0' as record number to exit):
+Record Number: 1
+Record Data: Apple
+Record Number: 2
+Record Data: Banana
+Record Number: 3
+Record Data: Orange
+Record Number: 4
+Record Data: Mango
+Record Number: 0
+
+Enter record number to access: 3
+
+Records read sequentially:
+Record 1: Apple
+Record 2: Banana
+Record 3: Orange
