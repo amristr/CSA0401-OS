@@ -1,0 +1,106 @@
+PROGRAM:
+
+#include <stdio.h>
+
+#define MAX_MEMORY 1000
+
+int memory[MAX_MEMORY];
+
+void initializeMemory()
+{
+    for (int i = 0; i < MAX_MEMORY; i++)
+    {
+        memory[i] = -1;
+    }
+}
+
+void displayMemory()
+{
+    int i, j;
+    int count = 0;
+
+    printf("Memory Status:\n");
+
+    for (i = 0; i < MAX_MEMORY; i++)
+    {
+        if (memory[i] == -1)
+        {
+            count++;
+            j = i;
+
+            while (j < MAX_MEMORY && memory[j] == -1)
+            {
+                j++;
+            }
+
+            printf("Free memory block %d-%d\n", i, j - 1);
+            i = j - 1;
+        }
+    }
+
+    if (count == 0)
+    {
+        printf("No free memory available.\n");
+    }
+}
+
+void allocateMemory(int processId, int size)
+{
+    int start = -1;
+    int blockSize = 0;
+
+    for (int i = 0; i <= MAX_MEMORY; i++)
+    {
+        if (i < MAX_MEMORY && memory[i] == -1)
+        {
+            if (blockSize == 0)
+            {
+                start = i;
+            }
+
+            blockSize++;
+        }
+        else
+        {
+            if (blockSize >= size)
+            {
+                for (int j = start; j < start + size; j++)
+                {
+                    memory[j] = processId;
+                }
+
+                printf("Allocated memory block %d-%d to Process %d\n",
+                       start, start + size - 1, processId);
+
+                return;
+            }
+
+            blockSize = 0;
+        }
+    }
+
+    printf("Memory allocation for Process %d failed\n", processId);
+}
+
+int main()
+{
+    initializeMemory();
+
+    allocateMemory(1, 200);
+    allocateMemory(2, 300);
+    allocateMemory(3, 100);
+
+    displayMemory();
+
+    return 0;
+}
+
+
+OUTPUT:
+
+Allocated memory block 0-199 to Process 1
+Allocated memory block 200-499 to Process 2
+Allocated memory block 500-599 to Process 3
+
+Memory Status:
+Free memory block 600-999
